@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-lastmod-updater",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Automatically updates the YAML front matter's lastmod field to the current date each time you save a file.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
