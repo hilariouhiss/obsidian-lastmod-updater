@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Automatically updates the YAML front matter's lastmod field to the current date each time you save a file.",
-	"author": "Obsidian",
+	"author": "Hilariouhiss",
 	"authorUrl": "https://blog.frosted.top",
 	"fundingUrl": "",
 	"isDesktopOnly": false
