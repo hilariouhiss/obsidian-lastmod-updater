@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-lastmod-updater",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Automatically updates the YAML front matter's lastmod field to the current date each time you save a file.",
 	"main": "main.js",
 	"scripts": {
