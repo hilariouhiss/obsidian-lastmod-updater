@@ -94,8 +94,11 @@ export default class LastModUpdaterPlugin extends Plugin {
 						this.settings.dateFormat
 					);
 
-					 // 使用自定义字段名称构造正则匹配规则
-					const lastmodRegex = new RegExp(`^${this.settings.lastmodField}:\\s*.*$`, "m");
+					// 使用自定义字段名称构造正则匹配规则
+					const lastmodRegex = new RegExp(
+						`^${this.settings.lastmodField}:\\s*.*$`,
+						"m"
+					);
 					if (lastmodRegex.test(frontMatter)) {
 						frontMatter = frontMatter.replace(
 							lastmodRegex,
@@ -103,7 +106,9 @@ export default class LastModUpdaterPlugin extends Plugin {
 						);
 					} else if (this.settings.autoInsert) {
 						// 自动插入自定义字段名称
-						const closingDelimiterRegex = new RegExp(`\\n${delimiter}\\s*$`);
+						const closingDelimiterRegex = new RegExp(
+							`\\n${delimiter}\\s*$`
+						);
 						if (closingDelimiterRegex.test(frontMatter)) {
 							frontMatter = frontMatter.replace(
 								closingDelimiterRegex,
@@ -205,7 +210,7 @@ class LastModUpdaterSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
-			
+
 		new Setting(containerEl)
 			.setName("自动插入 lastmod 字段")
 			.setDesc("启用后当 Front Matter 中不存在 lastmod 时自动插入")
@@ -216,8 +221,8 @@ class LastModUpdaterSettingTab extends PluginSettingTab {
 						this.plugin.settings.autoInsert = value;
 						await this.plugin.saveSettings();
 					})
-				);
-				
+			);
+
 		// 新增：设置自定义 lastmod 字段名称
 		new Setting(containerEl)
 			.setName("lastmod 字段名称")
@@ -227,7 +232,8 @@ class LastModUpdaterSettingTab extends PluginSettingTab {
 					.setPlaceholder("lastmod")
 					.setValue(this.plugin.settings.lastmodField)
 					.onChange(async (value) => {
-						this.plugin.settings.lastmodField = value.trim() || "lastmod";
+						this.plugin.settings.lastmodField =
+							value.trim() || "lastmod";
 						await this.plugin.saveSettings();
 					})
 			);

@@ -18,8 +18,9 @@ Lastmod Updater 是一个 Obsidian 插件，每次保存文件时自动更新 YA
 
 ## 设置选项
 
-- **日期格式**: 设置日期格式，例如 `YYYY-MM-DD HH:mm` 或 `YYYY/MM/DD`。
+- **日期格式**: 设置日期格式，例如 `YYYY-MM-DD HH:mm` 、`YYYY/MM/DD` 或 `YYYY-MM-DD`。
 - **Front Matter 分隔符**: 设置 Front Matter 分隔符，例如 `---` 或 `+++`，必须在单独一行。
+- **字段名称**：自定义最后修改日期字段名称
 - **调试模式**: 启用后在控制台输出调试信息。
 
 ## 作者
