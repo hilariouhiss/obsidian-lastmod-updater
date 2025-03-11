@@ -4,12 +4,18 @@ interface LastModUpdaterSettings {
 	dateFormat: string;
 	frontMatterDelimiter: string;
 	debug: boolean;
+	autoInsert: boolean;
+	// 新增：自定义 lastmod 字段名称
+	lastmodField: string;
 }
 
 const DEFAULT_SETTINGS: LastModUpdaterSettings = {
-	dateFormat: "YYYY-MM-DD HH:mm",
+	dateFormat: "YYYY-MM-DD",
 	frontMatterDelimiter: "---",
 	debug: false,
+	autoInsert: true,
+	// 默认字段名称
+	lastmodField: "lastmod",
 };
 
 function formatDate(date: Date, format: string): string {
@@ -88,27 +94,27 @@ export default class LastModUpdaterPlugin extends Plugin {
 						this.settings.dateFormat
 					);
 
-					// 正则匹配 lastmod 字段（多行匹配模式）
-					const lastmodRegex = /^lastmod:\s*.*$/m;
+					 // 使用自定义字段名称构造正则匹配规则
+					const lastmodRegex = new RegExp(`^${this.settings.lastmodField}:\\s*.*$`, "m");
 					if (lastmodRegex.test(frontMatter)) {
 						frontMatter = frontMatter.replace(
 							lastmodRegex,
-							`lastmod: ${currentDate}`
+							`${this.settings.lastmodField}: ${currentDate}`
 						);
-					} else {
-						// 尝试在 closing delimiter 之前插入 lastmod 字段
-						const closingDelimiterRegex = new RegExp(
-							`\\n${delimiter}\\s*$`
-						);
+					} else if (this.settings.autoInsert) {
+						// 自动插入自定义字段名称
+						const closingDelimiterRegex = new RegExp(`\\n${delimiter}\\s*$`);
 						if (closingDelimiterRegex.test(frontMatter)) {
 							frontMatter = frontMatter.replace(
 								closingDelimiterRegex,
-								`\nlastmod: ${currentDate}\n${delimiter}`
+								`\n${this.settings.lastmodField}: ${currentDate}\n${delimiter}`
 							);
 						} else {
-							// 如果没有匹配到关闭分隔符，则直接追加
-							frontMatter += `\nlastmod: ${currentDate}\n`;
+							frontMatter += `\n${this.settings.lastmodField}: ${currentDate}\n`;
 						}
+					} else {
+						// 未启用自动插入则跳过更新
+						return;
 					}
 
 					const newContent =
@@ -161,7 +167,7 @@ class LastModUpdaterSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("日期格式")
-			.setDesc("例如：YYYY-MM-DD HH:mm 或 YYYY/MM/DD")
+			.setDesc("例如：YYYY-MM-DD")
 			.addText((text) =>
 				text
 					.setPlaceholder("输入日期格式")
@@ -196,6 +202,32 @@ class LastModUpdaterSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.debug)
 					.onChange(async (value) => {
 						this.plugin.settings.debug = value;
+						await this.plugin.saveSettings();
+					})
+			);
+			
+		new Setting(containerEl)
+			.setName("自动插入 lastmod 字段")
+			.setDesc("启用后当 Front Matter 中不存在 lastmod 时自动插入")
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.autoInsert)
+					.onChange(async (value) => {
+						this.plugin.settings.autoInsert = value;
+						await this.plugin.saveSettings();
+					})
+				);
+				
+		// 新增：设置自定义 lastmod 字段名称
+		new Setting(containerEl)
+			.setName("lastmod 字段名称")
+			.setDesc("自定义用于更新最后修改时间的字段名称")
+			.addText((text) =>
+				text
+					.setPlaceholder("lastmod")
+					.setValue(this.plugin.settings.lastmodField)
+					.onChange(async (value) => {
+						this.plugin.settings.lastmodField = value.trim() || "lastmod";
 						await this.plugin.saveSettings();
 					})
 			);
